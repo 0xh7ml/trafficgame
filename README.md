@@ -40,3 +40,11 @@ This project is a Python-based simulation tool designed for CSC455, aimed at mod
     source venv/bin/activate
     pip3 install -r requirements.txt
     ```
+
+### Project Structure
+    assets:
+       - vehicle image, background image
+    audio:
+       - vehicle sound
+    main.py: game file
+    requirements.txt: dependency file
