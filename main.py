@@ -8,6 +8,7 @@ pygame.init()
 pygame.mixer.init()  # Initialize the mixer for audio
 
 # Screen dimensions
+# Screen Setup
 WIDTH, HEIGHT = 1366, 768
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Smart Traffic Simulation || CSC 455 Project")
@@ -36,13 +37,17 @@ except:
     background_image = None
 
 # Load vehicle images from assets folder
-vehicle_images = {}
+vehicle_images = {} # blank dictionary to store vehicle images
+
+# Vehicle sizes and speeds
+# Change vehicle sizes and speeds as per the requirements
 vehicle_sizes = {
     "car": {"width": 90, "height": 90, "speed": 2},
     "bus": {"width": 161.5, "height": 101, "speed": 1.8},
     "bike": {"width": 45, "height": 45, "speed": 2.5},
     "cng": {"width": 90, "height": 90, "speed": 2.4}
 }
+
 for v_type in vehicle_sizes:
     try:
         img = pygame.image.load(f'assets/{v_type}.png')
@@ -51,7 +56,7 @@ for v_type in vehicle_sizes:
     except:
         vehicle_images[v_type] = None
 
-# Traffic light settings
+# Traffic light settings Start here
 LIGHT_DIAMETER = 15
 LIGHT_RADIUS = LIGHT_DIAMETER // 2  # 7.5 radius
 BAR_WIDTH = 20
@@ -64,7 +69,9 @@ LIGHT_POS = [
 ]
 LIGHT_STATE = ["red", "red", "green", "green"]  # Top, Bottom, Right, Left
 LIGHT_TIMER = [30 * 60, 30 * 60, 30 * 60, 30 * 60]  # 30 seconds at 60 FPS
-LIGHT_DURATION = 30 * 60
+LIGHT_DURATION = 30 * 60 
+
+# Traffic lights settings Ends here 
 
 # Congestion and score
 congestion_level = 0
@@ -80,14 +87,21 @@ night_overlay.fill((0, 0, 0, 128))  # 50% opacity black
 font = pygame.font.SysFont("Arial", 24)
 
 # Vehicle class
+"""
+Represents a vehicle in the simulation.
+@param x: Initial x position of the vehicle
+@param y: Initial y position of the vehicle
+@param direction: Direction of the vehicle ("up", "down", "left", "right")
+@param lane: Lane of the vehicle (0 for left/upper lane, 1 for right/lower lane)
+@param vehicle_type: Type of the vehicle ("car", "bus", "bike", "cng")
+"""
 class Vehicle:
-    # Initialize the vehicle with its position, direction, lane, type, and color
-    def __init__(self, x, y, direction, lane, vehicle_type, color):
+    # Initialize the vehicle with its position, direction, lane, and type
+    def __init__(self, x, y, direction, lane, vehicle_type):
         self.vehicle_type = vehicle_type
         self.rect = pygame.Rect(x, y, vehicle_sizes[vehicle_type]["width"], vehicle_sizes[vehicle_type]["height"])
         self.direction = direction
         self.lane = lane
-        self.color = color
         self.speed = vehicle_sizes[vehicle_type]["speed"]
         self.image = vehicle_images[vehicle_type]
         if self.image:
@@ -193,7 +207,7 @@ def spawn_vehicle():
             lane = 1  # Down lane (bottom side of horizontal road)
             x = -vehicle_sizes[vehicle_type]["width"]
             y = INTERSECTION_Y - ROAD_WIDTH // 2 + lane * LANE_WIDTH + (LANE_WIDTH - vehicle_sizes[vehicle_type]["height"]) // 2
-        vehicles.append(Vehicle(x, y, direction, lane, vehicle_type, color))
+        vehicles.append(Vehicle(x, y, direction, lane, vehicle_type))
 
 def update_congestion():
     global congestion_level, score, score_text
